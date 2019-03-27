@@ -21,46 +21,29 @@ class PageRank(object):
         forward_link = self._linkdb_to_dict(self.db.get_forward_link())
         doc_size = len(self.doc_ids)
 
+        link_matrix = np.zeros((doc_size, doc_size), dtype=np.float32)
         scores = np.ones(doc_size, dtype=np.float32) / doc_size
+
+        for i in range(doc_size):
+            doc_id = self.doc_ids[i]
+            if doc_id in forward_link.keys():
+                links = list(
+                    map(lambda x: self.id2idx[x], forward_link[doc_id]))
+                link_matrix[i, :] = self.jump_prob / (doc_size - len(links))
+                link_matrix[i, links] = (1 - self.jump_prob) / len(links)
+            else:
+                link_matrix[i, :] = 1 / doc_size
+
+        link_matrix = np.transpose(link_matrix)
+        scores = np.transpose(scores)
 
         delta = 1
         while delta > self.e:
-            for idx, doc_id in enumerate(self.doc_ids):
-                sum_scores = 0
-                if doc_id in back_link.keys():
-                    target = list(map(
-                        lambda x: self.id2idx[x], back_link[doc_id]))
-                    for score_idx, score in enumerate(scores[target]):
-                        target_doc_id = self.doc_ids[target[score_idx]]
-                        if target_doc_id in forward_link.keys():
-                            num_forward = len(forward_link[target_doc_id])
-                            target_score = scores[self.id2idx[target_doc_id]]
-                            sum_scores += target_score / num_forward
+            prev = np.sum(scores)
+            scores = np.matmul(link_matrix, scores)
+            delta = prev - np.sum(scores)
 
-                scores[idx] = (self.jump_prob / doc_size) + \
-                    (1 - self.jump_prob) * sum_scores
-            print(np.sum(scores))
-            break
-
-        return scores
-
-    def _page_rank(self):
-        pass
-        # doc_ids = sorted(doc_ids)
-        # doc_size = len(doc_ids)
-        # link = self._tuple_to_dict(self.db.get_document_relate_link(doc_ids))
-
-        # matrix = np.ones(doc_size, dtype=np.float32) * (1 / doc_size)
-
-        # epsilon = 1
-        # while epsilon > self.e:
-        #     for idx, doc_id in enumerate(doc_ids):
-        #         matrix[idx] = (self.jump_prob / doc_size) + (1 - self.jump_prob) * sum([score / (
-        #             link[doc_ids[inner_idx]] if doc_ids[inner_idx] in link.keys() else 0) for inner_idx, score in enumerate(matrix) if inner_idx != idx])
-        #     print(np.sum(matrix))
-        #     epsilon = abs(epsilon - np.sum(matrix))
-
-        # print(matrix)
+        return list(zip(self.doc_ids, scores.tolist()))
 
     def _linkdb_to_dict(self, data):
         return {k: [int(tmp) for tmp in v.split(',')] + [k] if v is not None else [] for k, v in data}

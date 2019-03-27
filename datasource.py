@@ -85,48 +85,53 @@ class Datasource(object):
             values ( %s, %s, %s )
         """
         self.cursor.execute(truncate_sql)
-        tuples = self._dict_to_tuple(data)
+        tuples = self._dict_to_inverted_tuple(data)
+        self.cursor.executemany(sql, tuples)
+        self.db.commit()
+
+    def bulk_update_doc_info(self, data):
+        truncate_sql = """
+            TRUNCATE TABLE doc_info;
+        """
+        sql = """
+            INSERT INTO doc_info(id, doc_terms, page_rank)
+            values ( %s, %s, %s )
+        """
+        self.cursor.execute(truncate_sql)
+        tuples = self._dict_to_info_tuple(data)
         self.cursor.executemany(sql, tuples)
         self.db.commit()
 
     # TODO: 아래부터는 수정해야함
     def get_document_containing_terms(self, terms):
-        sql = """
-            SELECT a.term, a.freq, b.id, b.text
-            FROM inverted_index AS a INNER JOIN wiki AS b
-            ON a.id = b.id
+        target_sql = """
+            SELECT *
+            FROM inverted_index
             WHERE term = %s
         """
         for _ in range(len(terms) - 1):
-            sql += ' OR term = %s'
-        sql += ' ORDER BY term ASC'
+            target_sql += ' OR term = %s'
+
+        sql = f"""
+            SELECT wiki.id, wiki.title, search.term, search.freq, doc_info.doc_terms, doc_info.page_rank
+            FROM ({target_sql}) AS search
+        """
+        sql += """
+            LEFT OUTER JOIN wiki
+            ON search.id = wiki.id
+            LEFT OUTER JOIN doc_info
+            ON search.id = doc_info.id
+        """
 
         number_of_rows = self.cursor.execute(sql, terms)
         return self.cursor
 
-    def get_document_relate_link(self, doc_ids):
-        sql = """
-            SELECT id_from, id_to
-            FROM link
-            WHERE
-        """
-        # Generate id_from sql
-        from_sql = " (id_from = %s"
-        for _ in range(len(doc_ids) - 1):
-            from_sql += ' OR id_from = %s'
-        from_sql += ")"
-        # Generate id_to sql
-        to_sql = from_sql.replace("id_from", "id_to")
-
-        # Merge two sql
-        sql = sql + from_sql + ' AND ' + to_sql
-
-        number_of_rows = self.cursor.execute(sql, doc_ids * 2)
-        return self.cursor.fetchall()
-
-    def _dict_to_tuple(self, data):
+    def _dict_to_inverted_tuple(self, data):
         result = []
-        for term, docs_info in data.items():
-            doc_ids, freq = zip(*docs_info)
+        for term, info in data.items():
+            doc_ids, freq = zip(*info)
             result += zip([term, ] * len(doc_ids), doc_ids, freq)
         return result
+
+    def _dict_to_info_tuple(self, data):
+        return [(doc_id, info['nd'] if 'nd' in info.keys() else None, info['rank']) for doc_id, info in data.items()]
