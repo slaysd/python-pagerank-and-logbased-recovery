@@ -1,5 +1,7 @@
 import pymysql
 
+from glob import glob
+
 
 class Datasource(object):
     _instance = None
@@ -19,16 +21,17 @@ class Datasource(object):
         self._instance.db.close()
         self._instance.cursor.close()
 
-    def __init__(self, host='s.snu.ac.kr', port=3306, user='ADB2018-26161', passwd='ADB2018-26161'):
+    def __init__(self, host='s.snu.ac.kr', port=3306, student_id='ADB2018_26161'):
         print("Connect DB...", end='')
         self.db = pymysql.connect(
-            host='localhost', port=3306,
-            user='root',
-            passwd='test',
-            db='pagerank',
+            host=host, port=3306,
+            user=student_id,
+            passwd=student_id,
+            db=student_id,
             charset='utf8'
         )
         self.cursor = self.db.cursor()
+
         print("Done!")
 
     def get_num_doc(self):

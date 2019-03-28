@@ -12,14 +12,9 @@ from pagerank import PageRank
 class SearchEngineGenerator(object):
     def __init__(self):
         self.db = Datasource.instance()
-        self.num_doc = self.db.get_num_doc()
         self.inverted_index = {}
         self.doc_info = {}
         self.pagerank = PageRank()
-
-        if not self.num_doc:
-            print("There are no documuents. Bye!")
-            sys.exit()
 
     def __call__(self):
         start = time.time()

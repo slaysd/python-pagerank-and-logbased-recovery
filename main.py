@@ -1,8 +1,11 @@
+
 from generator import SearchEngineGenerator
 from search_engine import SearchEngine
 from nltk.tokenize import word_tokenize
 
 if __name__ == '__main__':
+
+    # Instance
     generator = SearchEngineGenerator()
     search = SearchEngine()
 
@@ -21,6 +24,5 @@ if __name__ == '__main__':
         results = search(query_terms)
 
         for doc in results:
-            # print("{:10}\t{:50}\t{:30}\t{:30}".format(*doc[1:]))
             print("{}, {}, {}, {}".format(*doc[1:]))
         print()
