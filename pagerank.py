@@ -17,7 +17,7 @@ class PageRank(object):
         self.id2idx = {v: idx for idx, v in enumerate(self.doc_ids)}
 
     def __call__(self):
-        back_link = self._linkdb_to_dict(self.db.get_back_link())
+        # back_link = self._linkdb_to_dict(self.db.get_back_link())
         forward_link = self._linkdb_to_dict(self.db.get_forward_link())
         doc_size = len(self.doc_ids)
 
@@ -29,10 +29,10 @@ class PageRank(object):
             if doc_id in forward_link.keys():
                 links = list(
                     map(lambda x: self.id2idx[x], forward_link[doc_id]))
-                link_matrix[i, :] = self.jump_prob / (doc_size - len(links))
-                link_matrix[i, links] = (1 - self.jump_prob) / len(links)
+                links.append(self.id2idx[doc_id])
+                link_matrix[i, links] = 1 / len(links)
             else:
-                link_matrix[i, :] = 1 / doc_size
+                link_matrix[i, self.id2idx[doc_id]] = 1
 
         link_matrix = np.transpose(link_matrix)
         scores = np.transpose(scores)
@@ -40,7 +40,8 @@ class PageRank(object):
         delta = 1
         while delta > self.e:
             prev = np.sum(scores)
-            scores = np.matmul(link_matrix, scores)
+            scores = (self.jump_prob / doc_size) + \
+                (1 - self.jump_prob) * np.matmul(link_matrix, scores)
             delta = prev - np.sum(scores)
 
         return list(zip(self.doc_ids, scores.tolist()))

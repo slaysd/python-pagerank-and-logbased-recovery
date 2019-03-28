@@ -11,7 +11,7 @@ class SearchEngine(object):
         self.db = Datasource.instance()
 
     def __call__(self, terms):
-        return self._calculate_rank(terms)
+        return self._calculate_rank(list(terms))
 
     def _calculate_rank(self, terms, topk=10):
         tfidf = []
@@ -41,8 +41,8 @@ class SearchEngine(object):
 
         docs = [(v['score'], k, v['title'], v['tfidf'], v['rank'])
                 for k, v in search_results.items()]
-        docs = sorted(docs, key=itemgetter(0), reverse=True)
-        docs = sorted(docs, key=itemgetter(1))
+        docs = sorted(docs, key=lambda x: (-x[0], x[1]))
+
         return docs[:topk]
 
     def _tf(self, ndt, nd):
