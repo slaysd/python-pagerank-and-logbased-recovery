@@ -14,6 +14,11 @@ class Datasource(object):
         cls.instance = cls._getInstance
         return cls._instance
 
+    def __del__(self):
+        print("Close database connection..")
+        self._instance.db.close()
+        self._instance.cursor.close()
+
     def __init__(self, host='s.snu.ac.kr', port=3306, user='ADB2018-26161', passwd='ADB2018-26161'):
         print("Connect DB...", end='')
         self.db = pymysql.connect(

@@ -7,7 +7,9 @@ if __name__ == '__main__':
     search = SearchEngine()
 
     # Generate invert index
-    # generator()
+    ans = input('Do you want to build scores?[type \'y\' to build or pass]: ')
+    if ans == 'y':
+        generator()
 
     while True:
         query = input('2018-26161> ')
@@ -15,7 +17,7 @@ if __name__ == '__main__':
             print("Okay bye!")
             break
 
-        query_terms = word_tokenize(query.lower().strip())
+        query_terms = set(word_tokenize(query.lower().strip()))
         results = search(query_terms)
 
         for doc in results:

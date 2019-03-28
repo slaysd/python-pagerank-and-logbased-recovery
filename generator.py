@@ -71,5 +71,11 @@ class SearchEngineGenerator(object):
         print("{:02f}s".format(time.time() - start))
 
     def _update_database(self):
+        '''
+        Update Database
+        '''
+        start = time.time()
+        print("\tUpdate database...", end='')
         self.db.bulk_update_inverted_index(self.inverted_index)
         self.db.bulk_update_doc_info(self.doc_info)
+        print("{:02f}s".format(time.time() - start))

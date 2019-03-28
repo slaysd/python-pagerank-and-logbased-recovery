@@ -1,7 +1,8 @@
 import math
 import collections
 
-from itertools import groupby, chain
+from operator import itemgetter
+from itertools import groupby
 from datasource import Datasource
 
 
@@ -38,8 +39,11 @@ class SearchEngine(object):
             search_results[doc_id]['score'] = total * \
                 search_results[doc_id]['rank']
 
-        return sorted(
-            [(v['score'], k, v['title'], v['tfidf'], v['rank']) for k, v in search_results.items()], key=lambda x: x[0], reverse=True)[:topk]
+        docs = [(v['score'], k, v['title'], v['tfidf'], v['rank'])
+                for k, v in search_results.items()]
+        docs = sorted(docs, key=itemgetter(0), reverse=True)
+        docs = sorted(docs, key=itemgetter(1))
+        return docs[:topk]
 
     def _tf(self, ndt, nd):
         return math.log(1 + (ndt / nd))
