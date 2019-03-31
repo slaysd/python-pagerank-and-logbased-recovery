@@ -37,9 +37,9 @@ class PageRank(object):
 
         delta = 1
         while delta > self.e:
-            prev = np.sum(scores)
+            prev = scores.copy()
             scores = np.matmul(link_matrix, scores)
-            delta = prev - np.sum(scores)
+            delta = np.sum(np.abs(prev - scores))
 
         return list(zip(self.doc_ids, scores.tolist()))
 
