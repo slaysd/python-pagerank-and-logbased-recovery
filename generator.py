@@ -39,7 +39,7 @@ class SearchEngineGenerator(object):
         for doc_id, text in result:
             if doc_id not in self.doc_info.keys():
                 self.doc_info[doc_id] = {}
-            terms = word_tokenize(text.lower().strip())
+            terms = word_tokenize(text.strip())
             self.doc_info[doc_id]['nd'] = len(terms)
             num_terms_in_doc = Counter(terms)
 

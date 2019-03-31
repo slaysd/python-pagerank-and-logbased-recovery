@@ -115,10 +115,10 @@ class Datasource(object):
         target_sql = """
             SELECT *
             FROM inverted_index
-            WHERE term = %s
+            WHERE UPPER(term) = UPPER(%s)
         """
         for _ in range(len(terms) - 1):
-            target_sql += ' OR term = %s'
+            target_sql += ' OR UPPER(term) = UPPER(%s)'
 
         sql = f"""
             SELECT wiki.id, wiki.title, search.term, search.freq, doc_info.doc_terms, doc_info.page_rank
