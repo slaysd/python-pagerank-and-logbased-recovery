@@ -110,7 +110,6 @@ class Datasource(object):
         self.cursor.executemany(sql, tuples)
         self.db.commit()
 
-    # TODO: 아래부터는 수정해야함
     def get_document_containing_terms(self, terms):
         target_sql = """
             SELECT *

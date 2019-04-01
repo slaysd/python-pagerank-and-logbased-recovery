@@ -3,8 +3,8 @@ from generator import SearchEngineGenerator
 from search_engine import SearchEngine
 from nltk.tokenize import word_tokenize
 
-if __name__ == '__main__':
 
+def main():
     # Instance
     generator = SearchEngineGenerator()
     search = SearchEngine()
@@ -26,3 +26,7 @@ if __name__ == '__main__':
         for doc in results:
             print("{}, {}, {}, {}".format(*doc[1:]))
         print()
+
+
+if __name__ == '__main__':
+    main()
