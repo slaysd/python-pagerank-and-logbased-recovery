@@ -20,7 +20,7 @@ def main():
             print("Okay bye!")
             break
 
-        query_terms = set(word_tokenize(query.lower().strip()))
+        query_terms = list(set(word_tokenize(query.strip())))
         results = search(query_terms)
 
         for doc in results:

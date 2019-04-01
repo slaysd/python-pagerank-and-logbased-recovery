@@ -33,7 +33,6 @@ class SearchEngineGenerator(object):
         Inverted Index 생성
         '''
         start = time.time()
-        print("\tGenerate inverted index...", end='')
 
         result = self.db.get_all_text()
         for doc_id, text in result:
@@ -47,15 +46,14 @@ class SearchEngineGenerator(object):
                 if term not in self.inverted_index.keys():
                     self.inverted_index[term] = list()
                 self.inverted_index[term].append((doc_id, freq))
-
-        print("{:02f}s".format(time.time() - start))
+        print("\tGenerate inverted index...{:02f}s".format(
+            time.time() - start))
 
     def _generate_pagerank(self):
         '''
         Page Rank 생성
         '''
         start = time.time()
-        print("\tGenerate page rank...", end='')
 
         ranks = self.pagerank()
         for doc_id, rank in ranks:
@@ -63,7 +61,7 @@ class SearchEngineGenerator(object):
                 self.doc_info[doc_id] = {}
             self.doc_info[doc_id]['rank'] = rank
 
-        print("{:02f}s".format(time.time() - start))
+        print("\tGenerate page rank...{:02f}s".format(time.time() - start))
 
     def _update_database(self):
         '''

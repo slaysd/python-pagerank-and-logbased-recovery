@@ -11,7 +11,7 @@ class SearchEngine(object):
         self.db = Datasource.instance()
 
     def __call__(self, terms):
-        return self._calculate_rank(list(terms))
+        return self._calculate_rank(terms)
 
     def _calculate_rank(self, terms, topk=10):
         tfidf = []

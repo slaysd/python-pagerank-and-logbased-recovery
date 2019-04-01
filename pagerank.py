@@ -24,6 +24,7 @@ class PageRank(object):
                               dtype=np.float32) * (self.jump_prob / doc_size)
 
         scores = np.ones(doc_size, dtype=np.float32) / doc_size
+
         for i in range(doc_size):
             doc_id = self.doc_ids[i]
             if doc_id in forward_link.keys():
@@ -36,11 +37,13 @@ class PageRank(object):
         scores = np.transpose(scores)
 
         delta = 1
+        cnt = 0
         while delta > self.e:
-            prev = scores.copy()
-            scores = np.matmul(link_matrix, scores)
+            prev = scores
+            scores = np.dot(link_matrix, scores)
             delta = np.sum(np.abs(prev - scores))
-
+            cnt += 1
+        print(f"\tPage rank iteration: {cnt}")
         return list(zip(self.doc_ids, scores.tolist()))
 
     def _linkdb_to_dict(self, data):
