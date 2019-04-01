@@ -28,17 +28,17 @@ class PageRank(object):
         for i in range(doc_size):
             doc_id = self.doc_ids[i]
             if doc_id in forward_link.keys():
-                links = list(
-                    map(lambda x: self.id2idx[x], forward_link[doc_id]))
-                link_matrix[i, links] += (1 - self.jump_prob) / len(links)
+                links = [self.id2idx[x] for x in forward_link[doc_id]]
+
+                for link in links:
+                    link_matrix[i, link] += (1 - self.jump_prob) / len(links)
             else:
                 link_matrix[i, :] += (1 - self.jump_prob) / doc_size
         link_matrix = np.transpose(link_matrix)
-        scores = np.transpose(scores)
-
+        scores = scores[:, np.newaxis]
         delta = 1
         cnt = 0
-        while delta > self.e:
+        while delta >= self.e:
             prev = scores
             scores = np.dot(link_matrix, scores)
             delta = np.sum(np.abs(prev - scores))
@@ -47,4 +47,4 @@ class PageRank(object):
         return list(zip(self.doc_ids, scores.tolist()))
 
     def _linkdb_to_dict(self, data):
-        return {k: [int(tmp) for tmp in v.split(',')] + [k] if v is not None else [] for k, v in data}
+        return {k: [int(tmp) for tmp in v.split(',')] if v is not None else [] for k, v in data}
