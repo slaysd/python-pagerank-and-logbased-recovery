@@ -29,7 +29,6 @@ class PageRank(object):
             doc_id = self.doc_ids[i]
             if doc_id in forward_link.keys():
                 links = [self.id2idx[x] for x in forward_link[doc_id]]
-
                 for link in links:
                     link_matrix[i, link] += (1 - self.jump_prob) / len(links)
             else:
