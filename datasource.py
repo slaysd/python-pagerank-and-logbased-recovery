@@ -129,6 +129,7 @@ class Datasource(object):
             ON search.id = wiki.id
             LEFT OUTER JOIN doc_info
             ON search.id = doc_info.id
+            ORDER BY search.term
         """
 
         number_of_rows = self.cursor.execute(sql, terms)

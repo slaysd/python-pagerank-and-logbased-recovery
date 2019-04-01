@@ -29,10 +29,12 @@ class SearchEngine(object):
                     }
                 nt += 1
                 tmp_tfidf.append((doc_id, self._tf(ndt, nd)))
+
             tmp_tfidf = map(lambda x: (
                 x[0], x[1] * self._idf(nt)), tmp_tfidf)
             tfidf += tmp_tfidf
 
+        tfidf = sorted(tfidf, key=lambda x: x[0])
         for doc_id, scores in groupby(tfidf, lambda x: x[0]):
             total = sum(list(map(lambda x: x[1], scores)))
             search_results[doc_id]['tfidf'] = total
