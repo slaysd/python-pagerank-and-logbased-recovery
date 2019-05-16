@@ -27,18 +27,20 @@ class RecoveryManagement(object):
                             undo_list.append(command_type)
                         elif 'commit' in groups[1]:
                             undo_list.remove(command_type)
-                            transaction = self.log_parser.find_transaction(command_type)
-                            for t in transaction:
-                                self.execute_recovery(command_type, t, 'new', 'redo')
-
+                            # transaction = self.log_parser.find_transaction(command_type)
+                            # for t in transaction:
+                            #     self.execute_recovery(command_type, t, 'new', 'redo')
                             save_redo_list.append(command_type)
                         elif 'abort' in groups[1]:
                             undo_list.remove(command_type)
-                            transaction = self.log_parser.find_transaction(command_type)
-                            for t in transaction:
-                                self.execute_recovery(command_type, t, 'old', 'redo')
-
+                            # transaction = self.log_parser.find_transaction(command_type)
+                            # for t in transaction:
+                            #     self.execute_recovery(command_type, t, 'old', 'redo')
                             save_redo_list.append(command_type)
+                    elif command_type.startswith('<T'):
+                        print(groups)
+                        self.execute_recovery(command_type, groups[1:], 'new', 'redo')
+
 
             save_undo_list = undo_list.copy()
             for log in self.log_parser.backward():
