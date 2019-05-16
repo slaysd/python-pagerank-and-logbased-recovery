@@ -1,25 +1,10 @@
 import pymysql
 
 from glob import glob
+from singleton import SingletonInstance
 
 
-class Datasource(object):
-    _instance = None
-
-    @classmethod
-    def _getInstance(cls):
-        return cls._instance
-
-    @classmethod
-    def instance(cls, *args, **kargs):
-        cls._instance = cls(*args, **kargs)
-        cls.instance = cls._getInstance
-        return cls._instance
-
-    def __del__(self):
-        print("Close database connection..")
-        self._instance.db.close()
-        self._instance.cursor.close()
+class Datasource(SingletonInstance):
 
     def __init__(self, host='s.snu.ac.kr', port=3306, student_id='ADB2018_26161'):
         print("Connect DB...", end='')
@@ -31,8 +16,21 @@ class Datasource(object):
             charset='utf8'
         )
         self.cursor = self.db.cursor()
-
+        # self._prepare_schema()
         print("Done!")
+
+    def __del__(self):
+        print("Close database connection..")
+        self.db.close()
+        self.cursor.close()
+
+    def _prepare_schema(self):
+        sql = """
+            ALTER TABLE link
+            ADD CONSTRAINT link_pk
+            PRIMARY KEY (id_from, id_to);
+        """
+        self.cursor.execute(sql)
 
     def get_num_doc(self):
         sql = """
@@ -133,6 +131,51 @@ class Datasource(object):
 
         number_of_rows = self.cursor.execute(sql, terms)
         return self.cursor
+
+    def get_old_value_for_log(self, table, column, key):
+        sql = f"""
+            SELECT {column} FROM {table} WHERE id = {key}
+        """
+        number_of_rows = self.cursor.execute(sql)
+        result = self.cursor.fetchone()
+        return result[0] if result else None
+
+    def get_all_tuple_for_log(self, table, target_column, key):
+        sql = f"""
+            SELECT * FROM {table} WHERE {target_column} = {key}
+        """
+
+        number_of_rows = self.cursor.execute(sql)
+        result = self.cursor.fetchall()
+        return result if result else None
+
+    def update_table(self, table, key_field, key, target_field, value):
+        sql = f"""
+            UPDATE {table} SET {target_field} = %s WHERE {key_field} = {key}
+        """
+
+        self.cursor.execute(sql, value)
+        self.db.commit()
+
+    def insert_table(self, table, value):
+        sql = f"""
+            INSERT IGNORE INTO {table} VALUES {value}
+        """
+
+        self.cursor.execute(sql)
+        self.db.commit()
+
+    def delete_table(self, table, key_field, key):
+        sql = f"""
+            DELETE FROM {table} WHERE {key_field} = {key}
+        """
+
+        self.cursor.execute(sql)
+        self.db.commit()
+
+    def free_sql(self, sql):
+        self.cursor.execute(sql)
+        self.db.commit()
 
     def _dict_to_inverted_tuple(self, data):
         result = []

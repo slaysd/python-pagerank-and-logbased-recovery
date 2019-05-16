@@ -1,0 +1,51 @@
+<T1> DELETE FROM wiki WHERE id = 339712;
+<T2> UPDATE wiki SET text = 'Les Humphries Singers Sing Sang Song Germany 1976' WHERE id = 6241635;
+checkpoint
+<T1> DELETE FROM link WHERE id_from = 339712;
+<T1> DELETE FROM link WHERE id_to = 339712;
+<T2> rollback
+system failure - recover
+<T3> DELETE FROM wiki WHERE id = 7649292;
+<T3> DELETE FROM link WHERE id_from = 7649292;
+<T3> DELETE FROM link WHERE id_to = 7649292;
+<T3> commit
+checkpoint
+system failure - recover
+search germany
+<T4> DELETE FROM wiki WHERE id = 339712;
+<T5> UPDATE wiki SET text = 'Les Humphries Singers Sing Sang Song Germany 1976' WHERE id = 6241635;
+<T4> DELETE FROM link WHERE id_from = 339712;
+<T4> DELETE FROM link WHERE id_to = 339712;
+<T5> commit
+<T4> commit
+system failure - recover
+<T6> DELETE FROM wiki WHERE id = 7649292;
+<T6> DELETE FROM link WHERE id_from = 7649292;
+<T6> DELETE FROM link WHERE id_to = 7649292;
+<T6> rollback
+checkpoint
+system failure - recover
+search germany
+search Jim Collins
+<T7> UPDATE wiki SET text = 'Christiano Ronaldo Howoo Ceremony' WHERE id = 24031233;
+<T9> UPDATE wiki SET title = 'Jihun Choi' WHERE id = 7649292;
+<T8> DELETE FROM wiki WHERE id = 7649292;
+<T7> UPDATE wiki SET text = 'I do not like MAMAMOO' WHERE id = 24031233;
+<T8> DELETE FROM link WHERE id_to = 24031233;
+checkpoint
+<T8> commit
+<T10> DELETE FROM link WHERE id_from = 43573261;
+<T11> UPDATE wiki SET text = 'We are not a team. This is a competition.' WHERE id = 24031233;
+<T11> commit
+<T7> commit
+<T9> UPDATE wiki SET title = 'Heal the world' WHERE id = 43573261;
+checkpoint
+<T12> UPDATE wiki SET text = 'Heal the world make it a better place for you and for me and for the entire human race' WHERE id = 7649292;
+system failure - recover
+<T7> UPDATE wiki SET text = 'Soju Manbyungman Huso' WHERE id = 11374610;
+system failure - recover
+system failure - recover
+checkpoint
+search MAMAMOO
+search competition
+search Soju

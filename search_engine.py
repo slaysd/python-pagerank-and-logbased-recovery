@@ -1,5 +1,6 @@
 import math
 import collections
+from nltk.tokenize import word_tokenize
 
 from operator import itemgetter
 from itertools import groupby
@@ -8,10 +9,14 @@ from datasource import Datasource
 
 class SearchEngine(object):
     def __init__(self):
-        self.db = Datasource.instance()
+        self.db = Datasource()
 
-    def __call__(self, terms):
+    def __call__(self, query):
+        terms = list(set(word_tokenize(query.strip())))
         return self._calculate_rank(terms)
+
+    def result_formatting(self, doc):
+        return "{}, {}, {}, {}".format(*doc[1:])
 
     def _calculate_rank(self, terms, topk=10):
         tfidf = []
@@ -33,8 +38,11 @@ class SearchEngine(object):
             tmp_tfidf = map(lambda x: (
                 x[0], x[1] * self._idf(nt)), tmp_tfidf)
             tfidf += tmp_tfidf
-
-        tfidf = sorted(tfidf, key=lambda x: x[0])
+        try:
+            tfidf = sorted(tfidf, key=lambda x: x[0])
+        except:
+            print(tfidf)
+            return
         for doc_id, scores in groupby(tfidf, lambda x: x[0]):
             total = sum(list(map(lambda x: x[1], scores)))
             search_results[doc_id]['tfidf'] = total

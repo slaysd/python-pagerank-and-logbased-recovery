@@ -9,7 +9,8 @@ from datasource import Datasource
 
 class PageRank(object):
     def __init__(self, jump_prob=0.15, e=math.exp(-8)):
-        self.db = Datasource.instance()
+
+        self.db = Datasource()
         self.jump_prob = jump_prob
         self.e = e
 

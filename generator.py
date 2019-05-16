@@ -7,19 +7,20 @@ from collections import Counter
 
 from datasource import Datasource
 from pagerank import PageRank
+from singleton import SingletonInstance
 
 
-class SearchEngineGenerator(object):
+class SearchEngineGenerator(SingletonInstance):
+
     def __init__(self):
-        self.db = Datasource.instance()
-        self.inverted_index = {}
-        self.doc_info = {}
+        self.db = Datasource()
         self.pagerank = PageRank()
 
     def __call__(self):
         start = time.time()
         print("Building tables...")
 
+        self._init()
         self._generate_inverted_index()
         self._generate_pagerank()
 
@@ -27,6 +28,10 @@ class SearchEngineGenerator(object):
 
         print("Total... {:02f}s".format(time.time() - start))
         print("Ready to search")
+
+    def _init(self):
+        self.inverted_index = {}
+        self.doc_info = {}
 
     def _generate_inverted_index(self):
         '''

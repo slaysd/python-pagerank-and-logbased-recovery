@@ -1,0 +1,1 @@
+rm prj2.log prj2.log.tmp search.txt recovery.txt

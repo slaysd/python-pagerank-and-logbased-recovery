@@ -3,7 +3,8 @@ DROP TABLE IF EXISTS `link`;
 
 CREATE TABLE `link` (
   `id_from` int(11) NOT NULL,
-  `id_to` int(11) NOT NULL
+  `id_to` int(11) NOT NULL,
+  PRIMARY KEY (`id_from`, `id_to`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 LOCK TABLES `link` WRITE;
