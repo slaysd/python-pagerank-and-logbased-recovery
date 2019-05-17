@@ -53,7 +53,7 @@ class RecoveryManagement(object):
 
             self.log_writer.recover(recover_line)
             self.log_writer.checkpoint()
-            f.write(f"recover {recover_line}\n")
+            f.write(f"recover {recover_line + 1}\n")
             f.write(f"redo {', '.join(save_redo_list)}\n")
             f.write(f"undo {', '.join(save_undo_list)}\n")
 
