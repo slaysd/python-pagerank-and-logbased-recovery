@@ -62,6 +62,7 @@ class LogParser(SingletonInstance):
                     return len(logs) - idx, m.groups()[1].split(',')
                 else:
                     return len(logs) - idx, []
+        return 0, []
 
     def find_transaction(self, t_id):
         start_flag = True

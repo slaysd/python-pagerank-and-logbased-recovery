@@ -38,9 +38,7 @@ class RecoveryManagement(object):
                             #     self.execute_recovery(command_type, t, 'old', 'redo')
                             save_redo_list.append(command_type)
                     elif command_type.startswith('<T'):
-                        print(groups)
                         self.execute_recovery(command_type, groups[1:], 'new', 'redo')
-
 
             save_undo_list = undo_list.copy()
             for log in self.log_parser.backward():

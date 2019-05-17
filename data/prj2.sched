@@ -1,6 +1,5 @@
 <T1> DELETE FROM wiki WHERE id = 339712;
 <T2> UPDATE wiki SET text = 'Les Humphries Singers Sing Sang Song Germany 1976' WHERE id = 6241635;
-checkpoint
 <T1> DELETE FROM link WHERE id_from = 339712;
 <T1> DELETE FROM link WHERE id_to = 339712;
 <T2> rollback
