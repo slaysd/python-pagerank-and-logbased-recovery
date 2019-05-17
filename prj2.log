@@ -73,8 +73,8 @@ checkpoint <T9>,<T10>
 #redo <T12>_('wiki', 'id', '7649292', 'text', 'None', 'Heal the world make it a better place for you and for me and for the entire human race')
 <T12>, <wiki>.<id:7649292>.<text>, <Heal the world make it a better place for you and for me and for the entire human race>, <None>
 <T12> abort
-<T10> abort
 <T9>, <wiki>.<id:43573261>.<title>, <Heal the world>, <Finite_Legendre_transform>
+<T10> abort
 <T9>, <wiki>.<id:7649292>.<title>, <Jihun Choi>, <None>
 <T9> abort
 recover 43

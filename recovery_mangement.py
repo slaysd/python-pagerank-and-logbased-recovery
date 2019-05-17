@@ -46,10 +46,12 @@ class RecoveryManagement(object):
                 command_type = groups[0]
                 if command_type in undo_list and 'start' in groups[1]:
                     undo_list.remove(command_type)
-                    transaction = self.log_parser.find_transaction(command_type)
-                    for t in reversed(transaction):
-                        self.execute_recovery(command_type, t, 'old', 'undo')
+                    # transaction = self.log_parser.find_transaction(command_type)
+                    # for t in reversed(transaction):
+                    #     self.execute_recovery(command_type, t, 'old', 'undo')
                     self.log_writer.free_write(f"{command_type} abort")
+                elif command_type in undo_list and command_type.startswith('<T'):
+                    self.execute_recovery(command_type, groups[1:], 'old', 'undo')
 
             self.log_writer.recover(recover_line)
             self.log_writer.checkpoint()
